@@ -29,6 +29,8 @@ flutter:
   assets:
     - assets/onboarding1.jpg
     - assets/onboarding2.jpg
+    - assets/bali.jpeg
+    - assets/lombok.jpeg
 
 
 

@@ -18,16 +18,16 @@ class PlanningHomePage extends StatefulWidget {
 }
 
 class _PlanningHomePageState extends State<PlanningHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   bool _isNewPlanning = false;
 
   void _onNavBarTapped(int index) {
-    setState(() {
-      if (_selectedIndex == 1 && index != 1) {
-        _isNewPlanning = false;
-      }
-      _selectedIndex = index;
-    });
+    // Disable navigasi ke tab lain
+    if (index == 1) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -37,37 +37,24 @@ class _PlanningHomePageState extends State<PlanningHomePage> {
         title: Text(
           _selectedIndex == 1
               ? (_isNewPlanning ? 'Tambah Rencana Baru' : 'Rencana Perjalanan Kamu'
-                
-              
-
               )
-              : '',
+              : '', 
         ),
-        leading: _selectedIndex == 1 && (_isNewPlanning || _selectedIndex != 0)
+        leading: _isNewPlanning
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   setState(() {
-                    if (_isNewPlanning) {
                       _isNewPlanning = false;
-                    } else {
-                      _selectedIndex = 0;
-                    }
                   });
                 },
               )
             : null,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        elevation: _selectedIndex == 0 ? 0 : 1,
-        actions: _selectedIndex == 0
-            ? [
-                IconButton(
-                  icon: const Icon(Icons.search, color: Colors.red),
-                  onPressed: () {},
-                ),
-              ]
-            : null,
+        elevation:  1,
+      
+          
       ),
       body: _buildCurrentBody(),
       bottomNavigationBar: BottomNavigationBar(
@@ -75,7 +62,7 @@ class _PlanningHomePageState extends State<PlanningHomePage> {
         onTap: _onNavBarTapped,
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
+        showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
@@ -99,24 +86,13 @@ class _PlanningHomePageState extends State<PlanningHomePage> {
   }
 
   Widget _buildCurrentBody() {
-    switch (_selectedIndex) {
-      case 0:
-        return const Center(child: SizedBox());
-      case 1:
-        return _isNewPlanning
-            ? const NewPlanningPageBody()
-            : PlanningMainContent(onAddPressed: () {
-                setState(() {
-                  _isNewPlanning = true;
-                });
-              });
-      case 2:
-        return const Center(child: Text("History"));
-      case 3:
-        return const Center(child: Text("Profil"));
-      default:
-        return const SizedBox.shrink();
-    }
+       return _isNewPlanning
+        ? const NewPlanningPageBody()
+        : PlanningMainContent(onAddPressed: () {
+            setState(() {
+              _isNewPlanning = true;
+            });
+          }); 
   }
 }
 
@@ -137,18 +113,22 @@ class PlanningMainContent extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Kumpulkan semua rencana goa di satu tempat',
+          'Kumpulkan semua rencana di satu tempat',
           style: TextStyle(fontSize: 14, color: Colors.grey),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         Center(
           child: ElevatedButton.icon(
             onPressed: onAddPressed,
-            icon: const Icon(Icons.add),
-            label: const Text('Tambah Rencana Baru', selectionColor: Colors.white,), 
+            icon: const Icon(Icons.add, color: Colors.white,),
+            label: const Text('Tambah Rencana Baru', 
+            style: TextStyle(color: Colors.white, fontSize: 14, fontWeight : FontWeight.bold), 
+            ), 
+            
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xffdc2626),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          
+              padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -161,45 +141,42 @@ class PlanningMainContent extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 8),
-        // _buildPlanItem(
-        //   imageUrl:
-        //       'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Pura_Besakih_01.jpg/320px-Pura_Besakih_01.jpg',
-        //   title: 'Liburan ke Bali (12 Hari 1 Malam)',
-        //   subtitle: '12 Hari 1 Malam - 12 Apr 2023 - 23 Apr 2023',
-        // ),
-        // _buildPlanItem(
-        //   imageUrl:
-        //       'https://www.google.com/imgres?q=lombok&imgurl=https%3A%2F%2Fcontent.r9cdn.net%2Frimg%2Fdimg%2F37%2F09%2F94c96987-city-54630-16c4ed51caa.jpg%3Fwidth%3D1366%26height%3D768%26xhint%3D2317%26yhint%3D1290%26crop%3Dtrue&imgrefurl=https%3A%2F%2Fwww.kayak.co.id%2Frute-penerbangan%2FIndonesia-ID0%2FPulau-Lombok-zzYOB&docid=LhW1EAQJkfoP9M&tbnid=FRVRbo1321ITXM&vet=12ahUKEwi6tu6GtKeNAxVrT2wGHTGJKvAQM3oECDgQAA..i&w=1366&h=768&hcb=2&ved=2ahUKEwi6tu6GtKeNAxVrT2wGHTGJKvAQM3oECDgQAA',
-        //   title: 'Trip ke Lombok (5 Hari 4 Malam)',
-        //   subtitle: '5 Hari 4 Malam - 10 Mei 2023 - 14 Mei 2023',
-        // ),
+        _buildPlanItem(
+          assetImagePath: 'assets/bali.jpeg',
+          title: 'Liburan ke Bali (12 Hari 1 Malam)',
+          subtitle: '12 Hari 1 Malam - 12 Apr 2023 - 23 Apr 2023',
+        ),
+        _buildPlanItem(
+          assetImagePath: 'assets/lombok.jpeg',
+          title: 'Trip ke Lombok (5 Hari 4 Malam)',
+          subtitle: '5 Hari 4 Malam - 10 Mei 2023 - 14 Mei 2023',
+),
       ],
     );
   }
 
   Widget _buildPlanItem({
-    required String imageUrl,
-    required String title,
-    required String subtitle,
-    required String imagenew
+  required String assetImagePath,
+  required String title,
+  required String subtitle,
   }) {
     return Card(
-      color: Colors.white,
-      elevation: 4,
-      shadowColor: Colors.black54,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+    color: Colors.white,
+    elevation: 4,
+    shadowColor: Colors.black54,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(8),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Pura_Besakih_01.jpg/320px-Pura_Besakih_01.jpg',
-            width: 60,
-            height: 60,
-            fit: BoxFit.cover,
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    child: ListTile(
+      contentPadding: const EdgeInsets.all(8),
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.asset(
+          assetImagePath,
+          width: 60,
+          height: 60,
+          fit: BoxFit.cover,
           ),
         ),
         title: Text(
@@ -293,11 +270,10 @@ bool _validateInputs() {
 
     if (!_validateInputs()) return;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showDialog<bool>( 
     
     context: context,
     builder: (context) => AlertDialog(
-      
       title: const Text('Konfirmasi Simpan'),
       content: Text(
         _editingIndex == null
@@ -312,6 +288,7 @@ bool _validateInputs() {
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
+          style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Color(0xffdc2626)), 
           child: const Text('Ya, Simpan'),
         ),
       ],
@@ -383,19 +360,20 @@ bool _validateInputs() {
      if (confirm == true) {
     setState(() {
       _plans.removeAt(index);
+      _clearFields();
       if (_editingIndex == index) {
         _clearFields();
         _editingIndex = null;
       }});
      }
 
-    setState(() {
-      _plans.removeAt(index);
-      if (_editingIndex == index) {
-        _clearFields();
-        _editingIndex = null;
-      }
-    });
+    // setState(() {
+    //   _plans.removeAt(index);
+    //   if (_editingIndex == index) {
+    //     _clearFields();
+    //     _editingIndex = null;
+    //   }
+    // });
   }
 
   Widget _buildTextField({
@@ -447,7 +425,7 @@ bool _validateInputs() {
             child: Column(
               children: [
                 _buildTextField(hint: 'Nama Perjalanan', icon: Icons.description_outlined, controller: _tripNameController),
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
@@ -538,7 +516,7 @@ bool _validateInputs() {
                     }
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 _buildTextField(
                   hint: 'Tanggal Akhir',
                   icon: Icons.calendar_today_outlined,
@@ -557,8 +535,9 @@ bool _validateInputs() {
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(hint: 'Jumlah Hari', icon: Icons.calendar_view_day_outlined, controller: _totalDaysController),
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
                 _buildTextField(hint: 'Jumlah Orang', icon: Icons.people_outline, controller: _numberOfPeopleController),
+                const SizedBox(height: 18),
               ],
             ),
           ),
@@ -573,7 +552,7 @@ bool _validateInputs() {
           ),
           child: Text(
             _editingIndex == null ? 'Simpan Rencana' : 'Update Rencana',
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 16),
